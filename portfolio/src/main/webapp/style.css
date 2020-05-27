@@ -1,9 +1,40 @@
 #content {
   margin-left: auto;
-  margin-right: auto;
+  <!--margin-right: auto;-->
   width: 650px;
+}
+
+#image_content {
+	margin-right: auto;
+	float: right;
+	width: 650px;
 }
 
 #greeting-container {
   margin-top: 20px;
+}
+
+.topbar {
+  overflow: hidden;
+  background-color: #0066ff;
+}
+
+.topbar a {
+  float: left;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  font-size: 18px;
+}
+
+.topbar a:hover {
+  color: white;
+  background-color: black;
+}
+
+.img {
+  max-width: 500px;
+  max-height: 500px;
+  width: auto;
+  height: auto;
 }
