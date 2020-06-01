@@ -1,7 +1,7 @@
 #content {
   margin-left: auto;
   float: left;
-  width: 650px;
+  width:700px;
   padding: 20px;
 }
 
@@ -38,13 +38,16 @@
 }
 
 .img {
-  max-width: 500px;
-  max-height: 500px;
+  max-width: 400px;
+  max-height: 400px;
   width: auto;
   height: auto;
+  padding-top: 50px;
+  padding-right: 50px;
+  float:right;
 }
 
-.image1 {
+.image {
   opacity: 1;
   max-width: 400px;
   max-height: 400px;
@@ -60,6 +63,8 @@
   display:inline-block;
   margin:auto;
   width: 50%;
+  /* padding-left: 50px; */
+
 }
 
 .container_proj {
@@ -67,7 +72,7 @@
   width:650px;
 }
 
-.container:hover .image1 {
+.container:hover .imageF {
   opacity: 0.3;
 }
 
@@ -80,6 +85,17 @@
   position: absolute;
   top: 50%;
   left: 50%;
+  text-align: center;
+}
+
+.text {
+  background-color: black;
+  font-size:16px;
+  padding:16px 32px;
+}
+
+.text a {
+    color: white;
 }
 
 .video_content h1{
