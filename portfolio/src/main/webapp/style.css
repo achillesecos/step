@@ -72,7 +72,7 @@
   width:650px;
 }
 
-.container:hover .imageF {
+.container:hover .image {
   opacity: 0.3;
 }
 
