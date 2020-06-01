@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>My Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+  </head>
+  <body>
+    <div class="topbar">
+      <a href="index.html">Home</a>
+      <a href="professional.html">Professional</a>
+      <a href="music.html">Music</a>
+      <a href="resume.pdf">Resume</a>
+    </div>
+
+    <h1>15-213 Introduction to Computer Systems Labs in C</h1>
+
+    <div id="content">
+      <h3>Cache Lab</h3>
+      <img src="images/cache.png" class="image">
+      <p>Implemented a Cache Memory Simulator that imitates the functionality of an L1 cache. The cache simulates the behavior of memory accesses from trace files with a Least Recently Used eviction policy.</p>
+
+      <hr>
+      <h3>Malloc Lab</h3>
+      <img src="images/malloc.jpg" class="image">
+      <p>Designed and implemented a Dynamic Memory Allocator library which supports Standard C Library calls (malloc, calloc, realloc, free). The allocator was optimized though the use of explicit and segregated lists to store free blocks, the modification of first-fit and best-fit search algorithms, a LIFO insertion policy, and the elimination of footers for allocated blocks. The result minimized internal fragmentation and achieved an optimized balance between memory utility and allocation throughput.</p>
+
+      <hr>
+      <h3>Shell Lab</h3>
+      <img src="images/fork.png" class="image">
+      <p>Implemented a simple UNIX-like shell which supports I/O redirection, built in linux commands, signal control, and job control through the ability to fork multiple child processes, supporting foreground and background jobs.</p>
+
+      <hr>
+      <h3>Proxy Lab</h3>
+      <img src="images/proxy.png" class="image">
+      <p>Designed and implemented a concurrent web-caching HTTP proxy, acting as the intermediary connection between client and server. The caching policy is Least Recently Used, and the implementation uses POSIX threads, which provides the locking primitive to avoid race conditions and synchronizing access to shared resources.</p>
+
+    </div>
+  </body>
+</html>
