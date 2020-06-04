@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 import com.google.gson.Gson;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
@@ -40,6 +41,15 @@ public class DataServlet extends HttpServlet {
     String msgLstJson = convertToJsonUsingGson(messages);
     response.setContentType("applications/json;");
     response.getWriter().println(messages);
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Respond with the result.
+    String comment = request.getParameter("text-input");
+    String[] words = comment.split("\\s*,\\s*");
+    response.setContentType("data/html;");
+    response.getWriter().println(Arrays.toString(words));
   }
 
  /**

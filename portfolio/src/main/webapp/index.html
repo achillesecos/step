@@ -40,7 +40,7 @@
       <p>My GitHub is <a href="https://github.com/achillesecos">here</a></p>
 
       <h1>Click here to see a random quote:</h1>
-      <button onclick="getRandomQuoteUsingArrowFunctions()">Fetch a quote!</button>
+      <button onclick="getRandomQuote()">Fetch a quote!</button>
       <div id="quote-container"></div>
 
     </div>
@@ -48,5 +48,16 @@
 
       <img src= "images/achilles.jpeg" class="img"/>
     </div>
+
+    <form action="/data" method="POST">
+
+      <p>Send me a message</p>
+      <textarea name="text-input"></textarea>
+      <br>
+      <br>
+      <input type="submit" />
+    </form>
+
+    
   </body>
 </html>
