@@ -47,9 +47,8 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Respond with the result.
     String comment = request.getParameter("text-input");
-    String[] words = comment.split("\\s*,\\s*");
     response.setContentType("data/html;");
-    response.getWriter().println(Arrays.toString(words));
+    response.getWriter().println(comment);
   }
 
  /**
