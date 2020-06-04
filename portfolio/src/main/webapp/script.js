@@ -28,12 +28,9 @@ function addRandomGreeting() {
 }
 
 /**
- * The above code is organized to show each individual step, but we can use an
- * ES6 feature called arrow functions to shorten the code. This function
- * combines all of the above code into a single Promise chain. You can use
- * whichever syntax makes the most sense to you.
+ * Displays a random quote on the page. 
  */
-function getRandomQuoteUsingArrowFunctions() {
+function getRandomQuote() {
   fetch('/data').then(response => response.text()).then((quote) => {
     document.getElementById('quote-container').innerText = quote;
   });
