@@ -25,4 +25,39 @@ function addRandomGreeting() {
   // Add it to the page.
   const greetingContainer = document.getElementById('greeting-container');
   greetingContainer.innerText = greeting;
+
+}
+
+// Transition delay in miliseconds
+const delay = 4000;
+
+// List of image paths
+const imgPathArr = ["image1.jpg", "image2.JPG", "image3.JPG", "image4.jpg", 
+  "image5.png", "image6.jpg", "image7.png", "image8.png", "image9.png", 
+  "image10.png"];
+
+// List of texts associated with every image
+const imgTextArr = ["Carnegie Mellon Hamerschlag Hall, Fall 2018", 
+                    "Los Angeles, Spring 2018", 
+                    "Aerial view of Pittsburgh from Cathedral of Learning, Fall 2018", 
+                    "Google Mountain View, Summer 2019", 
+                    "San Francisco, Summer 2019", 
+                    "Google Kirkland, Summer 2019", 
+                    "Downtown Seattle seen from Space Needle, Summer 2019", 
+                    "Wallace Falls State Park, Summer 2019", 
+                    "Downtown Vancouver seen from water plane, Summer 2019", 
+                    "Downtown Seattle seen from Kerry Park, Summer 2019"];
+
+// Transitions through images with the onload event
+window.onload = function() {
+    var image = document.getElementById("imgID");
+    var textBox = document.getElementById("imgText");
+    // accounts for the first iteration that sets index to 0
+    var index = -1;
+    function transition() {
+        index = (index + 1) % imgPathArr.length;
+        image.src = 'images/' + imgPathArr[index];
+        textBox.innerHTML = imgTextArr[index];
+    }
+    setInterval(transition, delay);
 }
