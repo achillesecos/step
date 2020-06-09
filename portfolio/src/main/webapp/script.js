@@ -38,3 +38,25 @@ function getRandomQuoteUsingArrowFunctions() {
     document.getElementById('quote-container').innerText = quote;
   });
 }
+
+/* Displays the maximum number of comments on the index page */
+function displayComments(commentLimit) {
+    
+  var commentURL = `/data?comment-count=${commentLimit}`;
+  fetch(commentURL).then(response => response.json()).then((comments) => {
+    const commentsList = document.getElementById('comment-history');
+    // create an li element for each comment
+    for (i = 0; i < comments.length; i++) {
+        var comment = comments[i];
+        commentsList.appendChild(createListElem(comment.message));
+    }
+
+  });
+}
+
+/* Creates the list element that contains the text of the comment */
+function createListElem(commentText) {
+    const liElem = document.createElement('li');
+    liElem.innerHTML = commentText;
+    return liElem;
+}

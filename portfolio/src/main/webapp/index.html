@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body>
+  <body onload="displayComments(5)">
     <div class="topbar">
       <a href="index.html">Home</a>
       <a href="professional.html">Professional</a>
@@ -49,6 +49,9 @@
       <img src= "images/achilles.jpeg" class="img"/>
     </div>
 
+    <h4>Enter max number of comments</h4>
+    <input type="number" id="limit" name="comment-count" min="1" max="5">
+    <button onclick="displayComments(document.getElementById('comment-count').value)">Here</button>
     <form action="/data" method="POST">
 
       <p>Send me a message</p>
@@ -56,6 +59,7 @@
       <br>
       <br>
       <input type="submit" />
+      <ul id="comment-history"></ul>
     </form>
 
     
