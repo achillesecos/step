@@ -17,12 +17,12 @@ package com.google.sps.data;
 /** The Entity kind, Comment, consists of message, ID, and timestamp */
 public final class Comment {
 
-  private final String msg;
+  private final String message;
   private final long id;
   private final long timestamp;
 
-  public Comment(String msg, long id, long timestamp) {
-    this.msg = msg;
+  public Comment(String message, long id, long timestamp) {
+    this.message = message;
     this.id = id;
     this.timestamp = timestamp;
   }
