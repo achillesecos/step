@@ -12,6 +12,54 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Transition delay in miliseconds
+const DELAY = 4000;
+
+// An array of objects such that each object contains a path with its
+// associated description
+const IMAGE_ARRAY = [
+    {
+        path: "images/image1.png",
+        description: "Carnegie Mellon Hamerschlag Hall, Fall 2018"
+    },
+    {
+        path: "images/image2.png",
+        description: "Los Angeles, Spring 2018"
+    },
+    {
+        path: "images/image3.png",
+        description: "Aerial view of Pittsburgh from Cathedral of Learning, Fall 2018"
+    },
+    {
+        path: "images/image4.png",
+        description: "Google Mountain View, Summer 2019"
+    },
+    {
+        path: "images/image5.png",
+        description: "San Francisco, Summer 2019"
+    },
+    {
+        path: "images/image6.png",
+        description: "Google Kirkland, Summer 2019"
+    },
+    {
+        path: "images/image7.png",
+        description: "Downtown Seattle seen from Space Needle, Summer 2019"
+    },
+    {
+        path: "images/image8.png",
+        description: "Wallace Falls State Park, Summer 2019"
+    },
+    {
+        path: "images/image9.png",
+        description: "Downtown Vancouver seen from water plane, Summer 2019"
+    },
+    {
+        path: "images/image10.png",
+        description: "Downtown Seattle seen from Kerry Park, Summer 2019"
+    }
+]
+
 /**
  * Adds a random greeting to the page.
  */
@@ -27,28 +75,7 @@ function addRandomGreeting() {
   greetingContainer.innerText = greeting;
 }
 
-// Transition delay in miliseconds
-const delay = 4000;
-
-// Key-Value object map of image path to associated text description
-const imgPathArr = {
-    "image0.png": "Downtown Seattle seen from Kerry Park, Summer 2019",
-    "image1.png": "Carnegie Mellon Hamerschlag Hall, Fall 2018", 
-    "image2.png": "Los Angeles, Spring 2018", 
-    "image3.png": "Aerial view of Pittsburgh from Cathedral of Learning, Fall 2018", 
-    "image4.png": "Google Mountain View, Summer 2019",
-    "image5.png": "San Francisco, Summer 2019", 
-    "image6.png": "Google Kirkland, Summer 2019",
-    "image7.png": "Downtown Seattle seen from Space Needle, Summer 2019", 
-    "image8.png": "Wallace Falls State Park, Summer 2019",
-    "image9.png": "Downtown Vancouver seen from water plane, Summer 2019" 
-};
-
-// The index in the image path that removes 'images/' in order to match a 
-// given key
-const pathSliceIdx = 7;
-
-// Transitions through images with the onload event
+/* Transitions through images with the onload event */
 window.onload = function() {
     
     var image = document.getElementById("imgID");
@@ -56,14 +83,13 @@ window.onload = function() {
     
     // accounts for the first iteration that sets index to 0
     var index = -1;
-    var imgPathStr = '';
     
     function transition() {
-        index = (index + 1) % Object.keys(imgPathArr).length;
-        imgPathStr = 'images/' + 'image' + index.toString() + '.png';
-        image.src = imgPathStr;
-        textBox.innerHTML = imgPathArr[imgPathStr.slice(7)];
+        
+        index = (index + 1) % IMAGE_ARRAY.length;
+        image.src = IMAGE_ARRAY[index].path;
+        textBox.innerHTML = IMAGE_ARRAY[index].description;
     }
     
-    setInterval(transition, delay);
+    setInterval(transition, DELAY);
 }
