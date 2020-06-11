@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Represents the default maximum number of comments to be displayed
+var commentLimit = 5;
+
+// Represents whether the comment-count is set via the button
+var isCountSet = false;
+
 /**
  * Adds a random greeting to the page.
  */
@@ -39,24 +45,52 @@ function getRandomQuoteUsingArrowFunctions() {
   });
 }
 
-/* Displays the maximum number of comments on the index page */
-function displayComments(commentLimit) {
-    
+/* Displays the maximum number of comments, commentLimit, on the index page 
+   only if the comment-count is set via the button, otherwise keeps the 
+   comment-count at a default of 5 */
+function displayComments() {
+
+  if(isCountSet) {
+    commentLimit = document.getElementById('limit').value;
+    deleteCurrComments();
+  }
+  
   var commentURL = `/data?comment-count=${commentLimit}`;
   fetch(commentURL).then(response => response.json()).then((comments) => {
     const commentsList = document.getElementById('comment-history');
+    
     // create an li element for each comment
     for (i = 0; i < comments.length; i++) {
         var comment = comments[i];
         commentsList.appendChild(createListElem(comment.message));
     }
-
   });
 }
 
 /* Creates the list element that contains the text of the comment */
 function createListElem(commentText) {
-    const liElem = document.createElement('li');
+    
+    var liElem = document.createElement('li');
     liElem.innerHTML = commentText;
     return liElem;
+}
+
+/* Deletes current comments from the comment-history list */
+function deleteCurrComments() {
+    
+    var elem = document.getElementById('comment-history');
+    elem.innerHTML = '';
+}
+
+/* Checks if comment-count is set via button, and will call displayComments()
+   with the isCountSet flag set to true */
+function setCommentCount() {
+  
+  var commentCount = document.getElementById('limit').value;
+  if(commentCount.length == 0) {
+    return;
+  }
+
+  isCountSet = true;
+  displayComments();
 }
