@@ -93,3 +93,12 @@ window.onload = function() {
     
     setInterval(transition, DELAY);
 }
+
+/**
+ * Displays a random quote on the page. 
+ */
+function getRandomQuote() {
+  fetch('/data').then(response => response.text()).then((quote) => {
+    document.getElementById('quote-container').innerText = quote;
+  });
+}

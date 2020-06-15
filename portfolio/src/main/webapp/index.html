@@ -39,6 +39,10 @@
       
       <p>My GitHub is <a href="https://github.com/achillesecos">here</a></p>
 
+      <h1>Click here to see a random quote:</h1>
+      <button onclick="getRandomQuote()">Fetch a quote!</button>
+      <div id="quote-container"></div>
+
     </div>
     <div id = "image_content">
 
@@ -47,5 +51,16 @@
       <div id="imgText"> </div>
       
     </div>
+
+    <form action="/data" method="POST">
+
+      <p>Send me a message</p>
+      <textarea name="text-input"></textarea>
+      <br>
+      <br>
+      <input type="submit" />
+    </form>
+
+    
   </body>
 </html>
