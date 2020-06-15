@@ -22,27 +22,36 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.Gson;
+import com.google.sps.data.User;
+
 @WebServlet("/login")
-public class LoginHomeServlet extends HttpServlet {
+public class LoginServlet extends HttpServlet {
+
+  private boolean isLoggedIn;
+  private String userEmail;
+  private User user;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html");
-
+    
+    response.setContentType("application/json;");
+    
+    Gson gson = new Gson();
+    
     UserService userService = UserServiceFactory.getUserService();
     if (userService.isUserLoggedIn()) {
-      String userEmail = userService.getCurrentUser().getEmail();
-      String urlToRedirectToAfterUserLogsOut = "/index.html";
-      String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
-
-      response.getWriter().println("<p>Welcome back " + userEmail + "!</p>");
-      response.getWriter().println("<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>");
+      isLoggedIn = true;
+      userEmail = userService.getCurrentUser().getEmail();
     } else {
-      String urlToRedirectToAfterUserLogsIn = "/index.html";
-      String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
-
-      response.getWriter().println("<p>Hello! Thanks for visiting my personal website.</p>");
-      response.getWriter().println("<p>Login <a href=\"" + loginUrl + "\">here</a>.</p>");
+      isLoggedIn = false;
+      userEmail = null;
     }
+
+    user = new User(isLoggedIn, userEmail);
+
+    String json = gson.toJson(user);
+    response.setContentType("application/json;");
+    response.getWriter().println(json);
   }
 }

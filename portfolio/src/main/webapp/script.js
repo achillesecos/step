@@ -45,6 +45,14 @@ function getRandomQuoteUsingArrowFunctions() {
   });
 }
 
+/* Will display comments and also get login form */
+function refresh() {
+
+  getLogin();
+  displayComments();
+}
+
+
 /* Displays the maximum number of comments, commentLimit, on the index page 
    only if the comment-count is set via the button, otherwise keeps the 
    comment-count at a default of 5 */
@@ -54,25 +62,35 @@ function displayComments() {
     commentLimit = document.getElementById('limit').value;
     deleteCurrComments();
   }
-  
+  //console.log()
   var commentURL = `/data?comment-count=${commentLimit}`;
-  fetch(commentURL).then(response => response.json()).then((comments) => {
+  fetch(commentURL).then(response => response.json()).then(comments => {
     const commentsList = document.getElementById('comment-history');
-    
+    console.log(comments.length);
     // create an li element for each comment
     for (i = 0; i < comments.length; i++) {
-        var comment = comments[i];
-        commentsList.appendChild(createListElem(comment.message));
+      var comment = comments[i];
+      var commentEmail = comment.userEmail;
+      //console.log(commentEmail);
+      commentsList.appendChild(createListElem(comment.message, commentEmail));
     }
   });
 }
 
 /* Creates the list element that contains the text of the comment */
-function createListElem(commentText) {
+function createListElem(commentText, email) {
     
     var liElem = document.createElement('li');
-    liElem.innerHTML = commentText;
+
+    liElem.innerHTML = commentText + " -" + email;
     return liElem;
+}
+
+/* Deletes all comments that are displayed in comment-history and removes them
+   from datastore */
+function deleteComments() {
+
+    fetch("/delete-data", {method: 'POST'}).then(() => deleteCurrComments());
 }
 
 /* Deletes current comments from the comment-history list */
@@ -91,6 +109,24 @@ function setCommentCount() {
     return;
   }
 
+  console.log('setCommentCount call');
   isCountSet = true;
   displayComments();
+}
+
+/* Gets login status and displays appropriate content on page */
+function getLogin() {
+
+  fetch("/login").then(response => response.json()).then(user => {
+    var userLogin = document.getElementById("login-content");
+
+    var commentForm = document.getElementById("commentBox");
+    commentForm.style.display = "none";
+    if (user.isLoggedIn) {
+      userLogin.innerHTML = "Click here to sign out";
+      commentForm.style.display = "block";
+    } else {
+      userLogin.innerHTML = "Login for special access";
+    }
+  });
 }

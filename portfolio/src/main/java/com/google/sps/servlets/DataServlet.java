@@ -34,6 +34,10 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 
 import com.google.gson.Gson;
 import com.google.sps.data.Comment;
+import com.google.sps.data.User;
+
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 
 /** Servlet that returns some example content. */
 @WebServlet("/data")
@@ -66,10 +70,11 @@ public class DataServlet extends HttpServlet {
     
     for (Entity entity: results.asIterable()) {
         String message = (String) entity.getProperty("message");
+        String userEmail = (String) entity.getProperty("userEmail");
         long id = entity.getKey().getId();
         long timestamp = (long) entity.getProperty("timestamp");
 
-        Comment comment = new Comment(message, id, timestamp);
+        Comment comment = new Comment(message, userEmail, id, timestamp);
         comments.add(comment);
         count++;
         if(count == commentCount) {
@@ -90,24 +95,21 @@ public class DataServlet extends HttpServlet {
     String message = request.getParameter("text-input");
     long timestamp = System.currentTimeMillis();
 
+    UserService userService = UserServiceFactory.getUserService();
+    String userEmail = "undefined user";
+    if(userService.isUserLoggedIn()){
+      userEmail = userService.getCurrentUser().getEmail();
+    }
     // Create Entity of kind 'Comment'
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("message", message);
+    commentEntity.setProperty("userEmail", userEmail);
     commentEntity.setProperty("timestamp", timestamp);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
 
     response.sendRedirect("/index.html");
-  }
-
- /**
-   * Converts a list of messages into a JSON string using the Gson library.
-   */
-  private String convertToJsonUsingGson(List<String> arr) {
-    Gson gson = new Gson();
-    String json = gson.toJson(arr);
-    return json;
   }
 
 }
