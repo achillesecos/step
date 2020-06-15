@@ -10,8 +10,9 @@
 }
 
 #image_content {
-  margin-left: auto;
+  display: inline-block;
   width: 650px;
+  padding-left: 350px;
 }
 
 #greeting-container {
@@ -63,8 +64,6 @@
   display: inline-block;
   margin: auto;
   width: 50%;
-  /* padding-left: 50px; */
-
 }
 
 .container_proj {
@@ -105,4 +104,17 @@
 
 .content h1{
   text-align: center;
+}
+
+#imgID {
+  padding-top: 100px;
+  max-width: 700px;
+  max-height: 700px;
+  width: auto;
+  height: auto;
+  align-content: center;
+}
+
+#imageText {
+    vertical-align: right;
 }
