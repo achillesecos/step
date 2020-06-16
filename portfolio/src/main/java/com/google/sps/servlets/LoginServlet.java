@@ -28,16 +28,16 @@ import com.google.sps.data.User;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
-  private boolean isLoggedIn;
-  private String userEmail;
-  private User user;
+  public boolean isLoggedIn;
+  public String userEmail;
+  public User user;
+  public Gson gson;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     
     response.setContentType("application/json;");
-    
-    Gson gson = new Gson();
+    gson = new Gson();
     
     UserService userService = UserServiceFactory.getUserService();
     if (userService.isUserLoggedIn()) {

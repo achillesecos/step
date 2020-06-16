@@ -28,44 +28,39 @@ import com.google.sps.data.User;
 @WebServlet("/login-response")
 public class LoginResponse extends HttpServlet {
 
-  private boolean isLoggedIn;
-  private String userEmail;
-  private User user;
+  public boolean isLoggedIn;
+  public String userEmail;
+  public User user;
+  public Gson gson;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    
+
     response.setContentType("text/html");
-    //response.setContentType("application/json;");
-    
-    Gson gson = new Gson();
+    gson = new Gson();
     
     UserService userService = UserServiceFactory.getUserService();
     if (userService.isUserLoggedIn()) {
       isLoggedIn = true;
-      
       userEmail = userService.getCurrentUser().getEmail();
       
-      //Change back to /index.html
       String urlToRedirectToAfterUserLogsOut = "/index.html";
       String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
-      String str1 = "<p>Goodbye " + userEmail + "!</p>";
-      response.getWriter().println(str1);
-      String str2 = "<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>";
-      response.getWriter().println(str2);
+      String logoutResponse = "<p>Goodbye " + userEmail + "!</p>";
+      response.getWriter().println(logoutResponse);
+      String logoutTag = "<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>";
+      response.getWriter().println(logoutTag);
     } else {
       isLoggedIn = false;
-
       userEmail = null;
 
-      //Change back to /index.html
       String urlToRedirectToAfterUserLogsIn = "/index.html";
       String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
 
-      String str3 = "<p>Hello! Thanks for visiting my personal website.</p>";
-      response.getWriter().println(str3);
-      String str4 = "<p>Login <a href=\"" + loginUrl + "\">here</a>.</p>";
-      response.getWriter().println(str4);
+      String loginResponse = "<p>Hello! Thanks for visiting my personal website.</p>";
+      response.getWriter().println(loginResponse);
+      String loginTag = "<p>Login <a href=\"" + loginUrl + "\">here</a>.</p>";
+      response.getWriter().println(loginTag);
     }
   }
 }

@@ -43,7 +43,8 @@ import com.google.appengine.api.users.UserServiceFactory;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  
+  public static final int MIN_COMMENTS = 1;
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -57,6 +58,10 @@ public class DataServlet extends HttpServlet {
         return;
     }
 
+    if(commentCount < MIN_COMMENTS) {
+      System.err.println("[ERROR] Number of comments to display lower than minimum comment constant of 1: " + commentCount);
+    }
+
     // Count that keeps track of how many messages seen so far
     int count = 0;
 
@@ -65,7 +70,6 @@ public class DataServlet extends HttpServlet {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
-
     List<Comment> comments = new ArrayList<>();
     
     for (Entity entity: results.asIterable()) {
@@ -83,7 +87,6 @@ public class DataServlet extends HttpServlet {
     }
 
     Gson gson = new Gson();
-
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(comments));
   }
@@ -93,10 +96,10 @@ public class DataServlet extends HttpServlet {
     
     // Servlet responsible for creating new comment tasks
     String message = request.getParameter("text-input");
-    long timestamp = System.currentTimeMillis();
-
-    UserService userService = UserServiceFactory.getUserService();
     String userEmail = "undefined user";
+    long timestamp = System.currentTimeMillis();
+    UserService userService = UserServiceFactory.getUserService();
+    
     if(userService.isUserLoggedIn()){
       userEmail = userService.getCurrentUser().getEmail();
     }
@@ -111,5 +114,4 @@ public class DataServlet extends HttpServlet {
 
     response.sendRedirect("/index.html");
   }
-
 }

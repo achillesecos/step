@@ -13,7 +13,7 @@
 // limitations under the License.
 
 // Represents the default maximum number of comments to be displayed
-var commentLimit = 5;
+const COMMENT_MAX = 5;
 
 // Represents whether the comment-count is set via the button
 var isCountSet = false;
@@ -47,31 +47,31 @@ function getRandomQuoteUsingArrowFunctions() {
 
 /* Will display comments and also get login form */
 function refresh() {
-
   getLogin();
   displayComments();
 }
 
 
-/* Displays the maximum number of comments, commentLimit, on the index page 
+/* Displays the set number of comments, commentLimit, on the index page 
    only if the comment-count is set via the button, otherwise keeps the 
-   comment-count at a default of 5 */
+   comment-count default to COMMENT_MAX */
 function displayComments() {
-
+  var commentLimit;
   if(isCountSet) {
     commentLimit = document.getElementById('limit').value;
     deleteCurrComments();
+  } else {
+    commentLimit = COMMENT_MAX;
   }
-  //console.log()
+  
   var commentURL = `/data?comment-count=${commentLimit}`;
   fetch(commentURL).then(response => response.json()).then(comments => {
     const commentsList = document.getElementById('comment-history');
-    console.log(comments.length);
+    
     // create an li element for each comment
     for (i = 0; i < comments.length; i++) {
       var comment = comments[i];
       var commentEmail = comment.userEmail;
-      //console.log(commentEmail);
       commentsList.appendChild(createListElem(comment.message, commentEmail));
     }
   });
@@ -79,9 +79,7 @@ function displayComments() {
 
 /* Creates the list element that contains the text of the comment */
 function createListElem(commentText, email) {
-    
-    var liElem = document.createElement('li');
-
+    const liElem = document.createElement('li');
     liElem.innerHTML = commentText + " -" + email;
     return liElem;
 }
@@ -89,39 +87,34 @@ function createListElem(commentText, email) {
 /* Deletes all comments that are displayed in comment-history and removes them
    from datastore */
 function deleteComments() {
-
     fetch("/delete-data", {method: 'POST'}).then(() => deleteCurrComments());
 }
 
 /* Deletes current comments from the comment-history list */
 function deleteCurrComments() {
-    
-    var elem = document.getElementById('comment-history');
+    const elem = document.getElementById('comment-history');
     elem.innerHTML = '';
 }
 
 /* Checks if comment-count is set via button, and will call displayComments()
    with the isCountSet flag set to true */
 function setCommentCount() {
-  
-  var commentCount = document.getElementById('limit').value;
+  const commentCount = document.getElementById('limit').value;
   if(commentCount.length == 0) {
     return;
   }
 
-  console.log('setCommentCount call');
   isCountSet = true;
   displayComments();
 }
 
 /* Gets login status and displays appropriate content on page */
 function getLogin() {
-
   fetch("/login").then(response => response.json()).then(user => {
     var userLogin = document.getElementById("login-content");
-
     var commentForm = document.getElementById("commentBox");
     commentForm.style.display = "none";
+    
     if (user.isLoggedIn) {
       userLogin.innerHTML = "Click here to sign out";
       commentForm.style.display = "block";
