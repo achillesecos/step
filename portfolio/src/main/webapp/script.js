@@ -13,7 +13,7 @@
 // limitations under the License.
 
 // Represents the default maximum number of comments to be displayed
-var commentLimit = 5;
+const COMMENT_MAX = 5;
 
 // Represents whether the comment-count is set via the button
 var isCountSet = false;
@@ -47,12 +47,14 @@ function getRandomQuoteUsingArrowFunctions() {
 
 /* Displays the maximum number of comments, commentLimit, on the index page 
    only if the comment-count is set via the button, otherwise keeps the 
-   comment-count at a default of 5 */
+   comment-count default to COMMENT_MAX */
 function displayComments() {
-
+  var commentLimit;
   if(isCountSet) {
     commentLimit = document.getElementById('limit').value;
     deleteCurrComments();
+  } else {
+    commentLimit = COMMENT_MAX;
   }
   
   var commentURL = `/data?comment-count=${commentLimit}`;
@@ -69,24 +71,21 @@ function displayComments() {
 
 /* Creates the list element that contains the text of the comment */
 function createListElem(commentText) {
-    
-    var liElem = document.createElement('li');
+    const liElem = document.createElement('li');
     liElem.innerHTML = commentText;
     return liElem;
 }
 
 /* Deletes current comments from the comment-history list */
 function deleteCurrComments() {
-    
-    var elem = document.getElementById('comment-history');
+    const elem = document.getElementById('comment-history');
     elem.innerHTML = '';
 }
 
 /* Checks if comment-count is set via button, and will call displayComments()
    with the isCountSet flag set to true */
 function setCommentCount() {
-  
-  var commentCount = document.getElementById('limit').value;
+  const commentCount = document.getElementById('limit').value;
   if(commentCount.length == 0) {
     return;
   }

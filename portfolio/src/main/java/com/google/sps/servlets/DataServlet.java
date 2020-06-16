@@ -39,7 +39,8 @@ import com.google.sps.data.Comment;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  
+  public static final int MIN_COMMENTS = 1;
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -51,6 +52,10 @@ public class DataServlet extends HttpServlet {
     } catch (NumberFormatException e) {
         System.err.println("[ERROR] Parameter could not convert to int: " + commentCountStr);
         return;
+    }
+
+    if(commentCount < MIN_COMMENTS) {
+      System.err.println("[ERROR] Number of comments to display lower than minimum comment constant of 1: " + commentCount);
     }
 
     // Count that keeps track of how many messages seen so far
