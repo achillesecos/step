@@ -28,10 +28,10 @@ import com.google.sps.data.User;
 @WebServlet("/login-response")
 public class LoginResponse extends HttpServlet {
 
-  public boolean isLoggedIn;
-  public String userEmail;
-  public User user;
-  public Gson gson;
+  private boolean isLoggedIn;
+  private String userEmail;
+  private User user;
+  private Gson gson;
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
