@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body>
+  <body onload="displayComments()">
     <div class="topbar">
       <a href="index.html">Home</a>
       <a href="professional.html">Professional</a>
@@ -52,13 +52,17 @@
       
     </div>
 
+    <h4>Enter max number of comments</h4>
+    <input type="number" id="limit" name="comment-count" min="1" max="5">
+    <button onclick="setCommentCount()">Here</button>
     <form action="/data" method="POST">
 
       <p>Send me a message</p>
       <textarea name="text-input"></textarea>
       <br>
       <br>
-      <input type="submit" />
+      <input type="submit"/>
+      <ul id="comment-history"></ul>
     </form>
 
     

@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Represents the default maximum number of comments to be displayed
+const COMMENT_MAX = 5;
+
+// Represents whether the comment-count is set via the button
+var isCountSet = false;
+
 // Transition delay in miliseconds
 const DELAY = 4000;
 
@@ -101,4 +107,53 @@ function getRandomQuote() {
   fetch('/data').then(response => response.text()).then((quote) => {
     document.getElementById('quote-container').innerText = quote;
   });
+}
+
+/* Displays the maximum number of comments, commentLimit, on the index page 
+   only if the comment-count is set via the button, otherwise keeps the 
+   comment-count default to COMMENT_MAX */
+function displayComments() {
+  var commentLimit;
+  if(isCountSet) {
+    commentLimit = document.getElementById('limit').value;
+    deleteCurrComments();
+  } else {
+    commentLimit = COMMENT_MAX;
+  }
+  
+  var commentURL = `/data?comment-count=${commentLimit}`;
+  fetch(commentURL).then(response => response.json()).then((comments) => {
+    const commentsList = document.getElementById('comment-history');
+    
+    // create an li element for each comment
+    for (i = 0; i < comments.length; i++) {
+        var comment = comments[i];
+        commentsList.appendChild(createListElem(comment.message));
+    }
+  });
+}
+
+/* Creates the list element that contains the text of the comment */
+function createListElem(commentText) {
+    const liElem = document.createElement('li');
+    liElem.innerHTML = commentText;
+    return liElem;
+}
+
+/* Deletes current comments from the comment-history list */
+function deleteCurrComments() {
+    const elem = document.getElementById('comment-history');
+    elem.innerHTML = '';
+}
+
+/* Checks if comment-count is set via button, and will call displayComments()
+   with the isCountSet flag set to true */
+function setCommentCount() {
+  const commentCount = document.getElementById('limit').value;
+  if(commentCount.length == 0) {
+    return;
+  }
+
+  isCountSet = true;
+  displayComments();
 }
