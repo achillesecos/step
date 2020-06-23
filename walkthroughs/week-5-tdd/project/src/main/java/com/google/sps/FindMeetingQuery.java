@@ -22,33 +22,35 @@ import java.util.ArrayList;
 
 public final class FindMeetingQuery {
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    // throw new UnsupportedOperationException("TODO: Implement this method.");
-
     long duration = request.getDuration();
     Collection<String> reqAttendees = request.getAttendees();
-    //Collection<String> optionalAttendees = request.getOptionalAttendees();
-    //Collection<String> allAttendees = new ArrayList<String>();  
-    //allAttendees.addAll(reqAttendees);
-    //allAttendees.addAll(optionalAttendees);
+    Collection<String> optionalAttendees = request.getOptionalAttendees();
+    Collection<String> allAttendees = new ArrayList<String>();  
+    allAttendees.addAll(reqAttendees);
+    allAttendees.addAll(optionalAttendees);
 
-    // if (!reqAttendees.isEmpty() && queryHelper(events, allAttendees, duration).isEmpty()) {
-    //   return queryHelper(events, reqAttendees, duration);
-    // }
-    return queryHelper(events, reqAttendees, duration);
+    if (!reqAttendees.isEmpty() && queryHelper(events, allAttendees, duration).isEmpty()) {
+      return queryHelper(events, reqAttendees, duration);
+    }
+    return queryHelper(events, allAttendees, duration);
   }
 
+  /* Helper function that returns all possible times for when a meeting could 
+     take place given meeting info */
   public Collection<TimeRange> queryHelper(Collection<Event> events, Collection<String> attendees, long duration) {
-
-    // Get TimeRanges of attendees busy
+    // Get TimeRanges of when attendees are busy
     List<TimeRange> busyTimes = new ArrayList<>();
-    for (Event e: events) {
-      if (eventHasAttendees(e, attendees)) {
-        busyTimes.add(e.getWhen());
+    for (Event event: events) {
+
+      // check any attendee from event is also in attendees
+      if (eventHasAttendees(event, attendees)) {
+        busyTimes.add(event.getWhen());
       }
     }
 
     Collections.sort(busyTimes, TimeRange.ORDER_BY_START);
 
+    // Consider edge cases for empty busyTimes
     if (busyTimes.isEmpty() && (TimeRange.WHOLE_DAY.duration() >= duration)) {
       busyTimes.add(TimeRange.WHOLE_DAY);
       return busyTimes;
@@ -61,27 +63,33 @@ public final class FindMeetingQuery {
     return getValidTimes(mergedTimes, duration);
   }
 
+  /* Will merge all the overlapping times that are busy meeting times */
   public List<TimeRange> mergeBusyTimes(List<TimeRange> busyTimes) {
     List<TimeRange> mergedTimes = new ArrayList<TimeRange>();
     mergedTimes.add(busyTimes.get(0));
+
     for (int i = 1; i < busyTimes.size(); i++) {
-      TimeRange tmpPrevTime = busyTimes.get(i-1);
+      TimeRange prevTime = busyTimes.get(i-1);
       TimeRange currTime = busyTimes.get(i);
-      if (tmpPrevTime.overlaps(currTime)) {
-          int newStart = Math.min(tmpPrevTime.start(), currTime.start());
-          int newEnd = Math.max(tmpPrevTime.end(), currTime.end());
+      
+      if (prevTime.overlaps(currTime)) {
+          int newStart = Math.min(prevTime.start(), currTime.start());
+          int newEnd = Math.max(prevTime.end(), currTime.end());
           int newDuration = newEnd - newStart;
+
+          // Remove both events that overlapped, add the merged one
+          busyTimes.remove(i);
           busyTimes.remove(i-1);
-          busyTimes.remove(i-1);
-          //System.out.println(busyTimes.size());
           busyTimes.add(i-1, TimeRange.fromStartDuration(newStart, newDuration));
-          //mergedTimes.add(TimeRange.fromStartDuration(currTime.start(), newDuration));
+          // Offset index
           i--;
       }
     }
     return busyTimes;
   }
 
+  /* Returns the valid meeting time from the merged meeting times, given the
+     requested meeting duration */
   public Collection<TimeRange> getValidTimes(List<TimeRange> mergedTimes, long duration) {
     ArrayList<TimeRange> validTimes = new ArrayList<TimeRange>();
     int startOfFirst = mergedTimes.get(0).start();
@@ -95,7 +103,7 @@ public final class FindMeetingQuery {
       int startOfCurr = mergedTimes.get(i).start();
       int timeDiff = startOfCurr - endOfPrev;
       
-      // if the potential new duration is shorter than duration we are requesting
+      // if the potential new duration is not shorter than duration we are requesting, add it
       if(timeDiff >= duration) {
         validTimes.add(TimeRange.fromStartDuration(endOfPrev, timeDiff));
       }
@@ -111,6 +119,7 @@ public final class FindMeetingQuery {
     return validTimes;
   }
 
+  /* Check if event has any attendee from attendees */
   public Boolean eventHasAttendees(Event event, Collection<String> attendees) {
     for (String attendee : event.getAttendees()) {
       if (attendees.contains(attendee)) return true;
