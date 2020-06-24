@@ -47,7 +47,6 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
     // Get input from form
     String commentCountStr = request.getParameter("comment-count");
     int commentCount;
@@ -60,10 +59,17 @@ public class DataServlet extends HttpServlet {
 
     if(commentCount < MIN_COMMENTS) {
       System.err.println("[ERROR] Number of comments to display lower than minimum comment constant of 1: " + commentCount);
+      //response.setContentType("index/html");
+      //response.getWriter().println("<script><div>I'm here</div></script>");
+      
+      response.setContentType("application/json");
+      response.getWriter().println("{error:\"errorMessage\"}");
+      response.sendRedirect("/index.html");
+      return;
     }
 
     // Count that keeps track of how many messages seen so far
-    int count = 0;
+    int commentCountSeen = 0;
 
     // Create a Query instance
     Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
@@ -80,8 +86,8 @@ public class DataServlet extends HttpServlet {
 
         Comment comment = new Comment(message, userEmail, id, timestamp);
         comments.add(comment);
-        count++;
-        if(count == commentCount) {
+        commentCountSeen++;
+        if(commentCountSeen >= commentCount) {
             break;
         }
     }
@@ -93,7 +99,6 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    
     // Servlet responsible for creating new comment tasks
     String message = request.getParameter("text-input");
     String userEmail = "undefined user";
@@ -103,6 +108,7 @@ public class DataServlet extends HttpServlet {
     if(userService.isUserLoggedIn()){
       userEmail = userService.getCurrentUser().getEmail();
     }
+    
     // Create Entity of kind 'Comment'
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("message", message);

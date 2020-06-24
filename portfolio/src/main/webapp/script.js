@@ -57,7 +57,9 @@ function refresh() {
    comment-count default to COMMENT_MAX */
 function displayComments() {
   var commentLimit;
+  
   if(isCountSet) {
+    console.log("countSetIn");
     commentLimit = document.getElementById('limit').value;
     deleteCurrComments();
   } else {
@@ -99,13 +101,19 @@ function deleteCurrComments() {
 /* Checks if comment-count is set via button, and will call displayComments()
    with the isCountSet flag set to true */
 function setCommentCount() {
-  const commentCount = document.getElementById('limit').value;
-  if(commentCount.length == 0) {
-    return;
+  //const tmpMsg = document.getElementById('asdf');
+  var commentCount = document.getElementById('limit').value;
+  console.log(commentCount);
+  if(commentCount < 1) {
+    console.log('test1');
+    //tmpMsg.innerHTML = "Oh shit";
   }
+  //else {
+    console.log('test2');
 
-  isCountSet = true;
-  displayComments();
+    isCountSet = true;
+    displayComments();
+  //}
 }
 
 /* Gets login status and displays appropriate content on page */

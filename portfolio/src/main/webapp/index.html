@@ -42,10 +42,9 @@
       <h1>Click here to see a random quote:</h1>
       <button onclick="getRandomQuote()">Fetch a quote!</button>
       <div id="quote-container"></div>
-
     </div>
-    <div id="image_content"> 
 
+    <div id="image_content"> 
       <img src="images/achilles.jpeg" class="img"/>
     </div>
 
@@ -54,27 +53,21 @@
     </div>
     
     <div id="commentBox">
-      
       <h4>Enter max number of comments</h4>
       <input type="number" id="limit" name="comment-count" min="1" max="5">
       <button onclick="setCommentCount()">Here</button>
+      <div id="asdf">hello1</div>
 
       <form action="/data" method="POST">
-
         <div>
           <p>Send me a message</p>
           <textarea name="text-input"></textarea>
-        
           <br>
           <input type="submit" value="Submit Comment"/>
-          <button onclick="deleteComments()" id="deleteButton">Delete Comments</button>
-          
+          <button onclick="deleteComments()" id="deleteButton">Delete Comments</button>          
         </div>
-
         <ul id="comment-history"></ul>
       </form>
-
     </div>
- 
   </body>
 </html>
