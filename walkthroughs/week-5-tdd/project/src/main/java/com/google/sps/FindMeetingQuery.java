@@ -29,35 +29,32 @@ public final class FindMeetingQuery {
     allAttendees.addAll(reqAttendees);
     allAttendees.addAll(optionalAttendees);
 
-    if (!reqAttendees.isEmpty() && queryHelper(events, allAttendees, duration).isEmpty()) {
-      return queryHelper(events, reqAttendees, duration);
+    if (!reqAttendees.isEmpty() && getValidMeetingTimes(events, allAttendees, duration).isEmpty()) {
+      return getValidMeetingTimes(events, reqAttendees, duration);
     }
-    return queryHelper(events, allAttendees, duration);
+    return getValidMeetingTimes(events, allAttendees, duration);
   }
 
   /* Helper function that returns all possible times for when a meeting could 
      take place given meeting info */
-  public Collection<TimeRange> queryHelper(Collection<Event> events, Collection<String> attendees, long duration) {
+  public Collection<TimeRange> getValidMeetingTimes(Collection<Event> events, Collection<String> attendees, long duration) {
     // Get TimeRanges of when attendees are busy
     List<TimeRange> busyTimes = new ArrayList<>();
     for (Event event: events) {
-
       // check any attendee from event is also in attendees
       if (eventHasAttendees(event, attendees)) {
         busyTimes.add(event.getWhen());
       }
     }
 
-    Collections.sort(busyTimes, TimeRange.ORDER_BY_START);
-
     // Consider edge cases for empty busyTimes
     if (busyTimes.isEmpty() && (TimeRange.WHOLE_DAY.duration() >= duration)) {
-      busyTimes.add(TimeRange.WHOLE_DAY);
-      return busyTimes;
+      return Collections.singletonList(TimeRange.WHOLE_DAY);
     } else if (busyTimes.isEmpty()) {
-      return busyTimes;
+      return Collections.emptyList();
     }
 
+    Collections.sort(busyTimes, TimeRange.ORDER_BY_START);
     List<TimeRange> mergedTimes = mergeBusyTimes(busyTimes);
 
     return getValidTimes(mergedTimes, duration);
@@ -66,10 +63,11 @@ public final class FindMeetingQuery {
   /* Will merge all the overlapping times that are busy meeting times */
   public List<TimeRange> mergeBusyTimes(List<TimeRange> busyTimes) {
     List<TimeRange> mergedTimes = new ArrayList<TimeRange>();
+    if(busyTimes.isEmpty()) return Collections.emptyList();
     mergedTimes.add(busyTimes.get(0));
 
     for (int i = 1; i < busyTimes.size(); i++) {
-      TimeRange prevTime = busyTimes.get(i-1);
+      TimeRange prevTime = mergedTimes.get(mergedTimes.size()-1);
       TimeRange currTime = busyTimes.get(i);
       
       if (prevTime.overlaps(currTime)) {
@@ -77,15 +75,14 @@ public final class FindMeetingQuery {
           int newEnd = Math.max(prevTime.end(), currTime.end());
           int newDuration = newEnd - newStart;
 
-          // Remove both events that overlapped, add the merged one
-          busyTimes.remove(i);
-          busyTimes.remove(i-1);
-          busyTimes.add(i-1, TimeRange.fromStartDuration(newStart, newDuration));
-          // Offset index
-          i--;
+          mergedTimes.remove(mergedTimes.size()-1);
+          // Update the merged one
+          mergedTimes.add(TimeRange.fromStartDuration(newStart, newDuration));
+      } else {
+        mergedTimes.add(currTime);
       }
     }
-    return busyTimes;
+    return mergedTimes;
   }
 
   /* Returns the valid meeting time from the merged meeting times, given the
