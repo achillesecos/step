@@ -50,21 +50,18 @@ public class DataServlet extends HttpServlet {
     // Get input from form
     String commentCountStr = request.getParameter("comment-count");
     int commentCount;
+    System.out.println(commentCountStr);
     try {
         commentCount = Integer.parseInt(commentCountStr);
     } catch (NumberFormatException e) {
-        System.err.println("[ERROR] Parameter could not convert to int: " + commentCountStr);
-        return;
+      response.setContentType("application/json");
+      response.getWriter().println("{\"error\":\"" + "[ERROR] Parameter could not convert to int" + commentCountStr + "\"}");
+      return;
     }
 
     if(commentCount < MIN_COMMENTS) {
-      System.err.println("[ERROR] Number of comments to display lower than minimum comment constant of 1: " + commentCount);
-      //response.setContentType("index/html");
-      //response.getWriter().println("<script><div>I'm here</div></script>");
-      
       response.setContentType("application/json");
-      response.getWriter().println("{error:\"errorMessage\"}");
-      response.sendRedirect("/index.html");
+      response.getWriter().println("{\"error\":\""+"[ERROR] Number of comments to display (" + commentCount + ") is lower than minimum comment constant of 1" + "\"}");
       return;
     }
 
