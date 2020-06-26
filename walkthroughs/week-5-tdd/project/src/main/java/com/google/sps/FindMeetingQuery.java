@@ -65,23 +65,24 @@ public final class FindMeetingQuery {
     List<TimeRange> mergedTimes = new ArrayList<TimeRange>();
     if(busyTimes.isEmpty()) return Collections.emptyList();
     mergedTimes.add(busyTimes.get(0));
+    
+    TimeRange mergedRange = busyTimes.get(0);
 
     for (int i = 1; i < busyTimes.size(); i++) {
-      TimeRange prevTime = mergedTimes.get(mergedTimes.size()-1);
-      TimeRange currTime = busyTimes.get(i);
-      
-      if (prevTime.overlaps(currTime)) {
-          int newStart = Math.min(prevTime.start(), currTime.start());
-          int newEnd = Math.max(prevTime.end(), currTime.end());
-          int newDuration = newEnd - newStart;
+      TimeRange range = busyTimes.get(i);
+      if (mergedRange.overlaps(range)) {  
+        int newStart = Math.min(mergedRange.start(), range.start());
+        int newEnd = Math.max(mergedRange.end(), range.end());
+        int newDuration = newEnd - newStart;
 
-          mergedTimes.remove(mergedTimes.size()-1);
-          // Update the merged one
-          mergedTimes.add(TimeRange.fromStartDuration(newStart, newDuration));
+        mergedRange = TimeRange.fromStartDuration(newStart, newDuration);
       } else {
-        mergedTimes.add(currTime);
+        mergedTimes.add(mergedRange);
+        mergedRange = range;
       }
     }
+
+    mergedTimes.add(mergedRange);
     return mergedTimes;
   }
 
