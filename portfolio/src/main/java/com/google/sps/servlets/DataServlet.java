@@ -50,7 +50,6 @@ public class DataServlet extends HttpServlet {
     // Get input from form
     String commentCountStr = request.getParameter("comment-count");
     int commentCount;
-    System.out.println(commentCountStr);
     try {
         commentCount = Integer.parseInt(commentCountStr);
     } catch (NumberFormatException e) {
