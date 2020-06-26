@@ -34,6 +34,10 @@ import com.google.appengine.api.datastore.Query.SortDirection;
 
 import com.google.gson.Gson;
 import com.google.sps.data.Comment;
+import com.google.sps.data.User;
+
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 
 /** Servlet that returns some example content. */
 @WebServlet("/data")
@@ -43,15 +47,21 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
     // Get input from form
     String commentCountStr = request.getParameter("comment-count");
     int commentCount;
     try {
         commentCount = Integer.parseInt(commentCountStr);
     } catch (NumberFormatException e) {
-        System.err.println("[ERROR] Parameter could not convert to int: " + commentCountStr);
-        return;
+      response.setContentType("application/json");
+      response.getWriter().println("{\"error\":\"" + "[ERROR] Parameter could not convert to int" + commentCountStr + "\"}");
+      return;
+    }
+
+    if(commentCount < MIN_COMMENTS) {
+      response.setContentType("application/json");
+      response.getWriter().println("{\"error\":\""+"[ERROR] Number of comments to display (" + commentCount + ") is lower than minimum comment constant of 1" + "\"}");
+      return;
     }
 
     if(commentCount < MIN_COMMENTS) {
@@ -59,45 +69,50 @@ public class DataServlet extends HttpServlet {
     }
 
     // Count that keeps track of how many messages seen so far
-    int count = 0;
+    int commentCountSeen = 0;
 
     // Create a Query instance
     Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
-
     List<Comment> comments = new ArrayList<>();
     
     for (Entity entity: results.asIterable()) {
         String message = (String) entity.getProperty("message");
+        String userEmail = (String) entity.getProperty("userEmail");
         long id = entity.getKey().getId();
         long timestamp = (long) entity.getProperty("timestamp");
 
-        Comment comment = new Comment(message, id, timestamp);
+        Comment comment = new Comment(message, userEmail, id, timestamp);
         comments.add(comment);
-        count++;
-        if(count == commentCount) {
+        commentCountSeen++;
+        if(commentCountSeen >= commentCount) {
             break;
         }
     }
 
     Gson gson = new Gson();
-
     response.setContentType("application/json;");
     response.getWriter().println(gson.toJson(comments));
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    
     // Servlet responsible for creating new comment tasks
     String message = request.getParameter("text-input");
+    String userEmail = "undefined user";
     long timestamp = System.currentTimeMillis();
-
+    UserService userService = UserServiceFactory.getUserService();
+    
+    if(userService.isUserLoggedIn()){
+      userEmail = userService.getCurrentUser().getEmail();
+    }
+    
     // Create Entity of kind 'Comment'
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("message", message);
+    commentEntity.setProperty("userEmail", userEmail);
     commentEntity.setProperty("timestamp", timestamp);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -105,14 +120,4 @@ public class DataServlet extends HttpServlet {
 
     response.sendRedirect("/index.html");
   }
-
- /**
-   * Converts a list of messages into a JSON string using the Gson library.
-   */
-  private String convertToJsonUsingGson(List<String> arr) {
-    Gson gson = new Gson();
-    String json = gson.toJson(arr);
-    return json;
-  }
-
 }

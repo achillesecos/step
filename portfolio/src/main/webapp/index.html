@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body onload="displayComments()">
+  <body onload="refresh()">
     <div class="topbar">
       <a href="index.html">Home</a>
       <a href="professional.html">Professional</a>
@@ -42,29 +42,35 @@
       <h1>Click here to see a random quote:</h1>
       <button onclick="getRandomQuote()">Fetch a quote!</button>
       <div id="quote-container"></div>
-
     </div>
-    <div id = "image_content">
 
+    <div id="image_content"> 
+      <img src="images/achilles.jpeg" class="img"/>
       <img id="imgID"/>
       <br>
       <div id="imgText"> </div>
-      
     </div>
 
-    <h4>Enter max number of comments</h4>
-    <input type="number" id="limit" name="comment-count" min="1" max="5">
-    <button onclick="setCommentCount()">Here</button>
-    <form action="/data" method="POST">
-
-      <p>Send me a message</p>
-      <textarea name="text-input"></textarea>
-      <br>
-      <br>
-      <input type="submit"/>
-      <ul id="comment-history"></ul>
-    </form>
-
+    <div>
+      <h4><a href="/login-response" id="login-content">Login for special access</a></h4>
+    </div>
     
+    <div id="commentBox">
+      <h4>Enter max number of comments</h4>
+      <input type="number" id="limit" name="comment-count" min="1" max="5">
+      <button onclick="setCommentCount()">Here</button>
+      <div id="error-message"></div>
+
+      <form action="/data" method="POST">
+        <div>
+          <p>Send me a message</p>
+          <textarea name="text-input"></textarea>
+          <br>
+          <input type="submit" value="Submit Comment"/>
+          <button onclick="deleteComments()" id="deleteButton">Delete Comments</button>          
+        </div>
+        <ul id="comment-history"></ul>
+      </form>
+    </div>
   </body>
 </html>

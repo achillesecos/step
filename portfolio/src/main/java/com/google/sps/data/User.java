@@ -14,18 +14,14 @@
 
 package com.google.sps.data;
 
-/** The Entity kind, Comment, consists of message, ID, and timestamp */
-public final class Comment {
+/** The User class, contains user info for authentic */
+public final class User {
 
-  private final String message;
+  private final boolean isLoggedIn;
   private final String userEmail;
-  private final long id;
-  private final long timestamp;
 
-  public Comment(String message, String userEmail, long id, long timestamp) {
-    this.message = message;
+  public User(boolean isLoggedIn, String userEmail) {
+    this.isLoggedIn = isLoggedIn;
     this.userEmail = userEmail;
-    this.id = id;
-    this.timestamp = timestamp;
   }
 }
