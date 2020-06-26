@@ -18,6 +18,54 @@ const COMMENT_MAX = 5;
 // Represents whether the comment-count is set via the button
 var isCountSet = false;
 
+// Transition delay in miliseconds
+const DELAY = 4000;
+
+// An array of objects such that each object contains a path with its
+// associated description
+const IMAGE_ARRAY = [
+    {
+        path: "images/image1.png",
+        description: "Carnegie Mellon Hamerschlag Hall, Fall 2018"
+    },
+    {
+        path: "images/image2.png",
+        description: "Los Angeles, Spring 2018"
+    },
+    {
+        path: "images/image3.png",
+        description: "Aerial view of Pittsburgh from Cathedral of Learning, Fall 2018"
+    },
+    {
+        path: "images/image4.png",
+        description: "Google Mountain View, Summer 2019"
+    },
+    {
+        path: "images/image5.png",
+        description: "San Francisco, Summer 2019"
+    },
+    {
+        path: "images/image6.png",
+        description: "Google Kirkland, Summer 2019"
+    },
+    {
+        path: "images/image7.png",
+        description: "Downtown Seattle seen from Space Needle, Summer 2019"
+    },
+    {
+        path: "images/image8.png",
+        description: "Wallace Falls State Park, Summer 2019"
+    },
+    {
+        path: "images/image9.png",
+        description: "Downtown Vancouver seen from water plane, Summer 2019"
+    },
+    {
+        path: "images/image10.png",
+        description: "Downtown Seattle seen from Kerry Park, Summer 2019"
+    }
+]
+
 /**
  * Adds a random greeting to the page.
  */
@@ -33,13 +81,29 @@ function addRandomGreeting() {
   greetingContainer.innerText = greeting;
 }
 
+/* Transitions through images with the onload event */
+window.onload = function() {
+    
+    var image = document.getElementById("imgID");
+    var textBox = document.getElementById("imgText");
+    
+    // accounts for the first iteration that sets index to 0
+    var index = -1;
+    
+    function transition() {
+        
+        index = (index + 1) % IMAGE_ARRAY.length;
+        image.src = IMAGE_ARRAY[index].path;
+        textBox.innerHTML = IMAGE_ARRAY[index].description;
+    }
+    
+    setInterval(transition, DELAY);
+}
+
 /**
- * The above code is organized to show each individual step, but we can use an
- * ES6 feature called arrow functions to shorten the code. This function
- * combines all of the above code into a single Promise chain. You can use
- * whichever syntax makes the most sense to you.
+ * Displays a random quote on the page. 
  */
-function getRandomQuoteUsingArrowFunctions() {
+function getRandomQuote() {
   fetch('/data').then(response => response.text()).then((quote) => {
     document.getElementById('quote-container').innerText = quote;
   });

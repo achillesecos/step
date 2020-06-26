@@ -64,6 +64,10 @@ public class DataServlet extends HttpServlet {
       return;
     }
 
+    if(commentCount < MIN_COMMENTS) {
+      System.err.println("[ERROR] Number of comments to display lower than minimum comment constant of 1: " + commentCount);
+    }
+
     // Count that keeps track of how many messages seen so far
     int commentCountSeen = 0;
 
